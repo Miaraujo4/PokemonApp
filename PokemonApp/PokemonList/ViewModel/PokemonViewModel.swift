@@ -10,7 +10,7 @@ import Foundation
 final class PokemonViewModel {
 
     // -MARK: Private Properties
-    private let service: PokemonServiceProtocol = PokemonService()
+    private let service: PokemonServiceProtocol
     private var pokemonDescriptionList: [PokemonDescription] = [PokemonDescription]()
     private(set) var presentationLayout: PresentationLayout = .MultiplePokemonInRow
     private(set) var pokemonList: [Pokemon] = [Pokemon]()
@@ -20,6 +20,11 @@ final class PokemonViewModel {
     
     // -MARK: Delegate
     weak var delegate: CollectionPokemonViewControllerDelegate?
+    
+    // -MARK: Init
+    init(service: PokemonServiceProtocol = PokemonService()) {
+        self.service = service
+    }
     
     // -MARK: Computed Properties
     var name: String {
