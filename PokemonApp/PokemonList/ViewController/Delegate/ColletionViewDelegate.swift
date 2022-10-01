@@ -10,10 +10,12 @@ import UIKit
 
 final class CollectionViewDelegate: NSObject, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
+    // -MARK: Properties
     var viewModel: PokemonViewModel = PokemonViewModel()
     
+    // -MARK: Functions
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        
+        viewModel.itemWasSelected(position: indexPath.item)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
