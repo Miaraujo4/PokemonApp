@@ -7,17 +7,24 @@
 
 import UIKit
 
-class CollectionPokemonViewController: UIViewController {
+protocol CollectionPokemonViewControllerDelegate: AnyObject {
+    func canReloadView()
+    func goToDetailScreen(pokemon: Pokemon, pokemonDescription: PokemonDescription)
+    func errorRequest(title: String, description: String)
+}
+
+final class CollectionPokemonViewController: UIViewController {
     
     // -MARK: Private UI properties
     private var pokemonView: PokemonView = PokemonView()
     private var rightButton: UIBarButtonItem = UIBarButtonItem()
     
     // -MARK: Private properties
-    private var viewModel: PokemonViewModel = PokemonViewModel()
+    private var viewModel: PokemonViewModel
     
     // -MARK: Init
-    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+    init(viewModel: PokemonViewModel) {
+        self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -33,7 +40,9 @@ class CollectionPokemonViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        viewModel.delegate = self
         configureNavigationBar()
+        viewModel.getPokemonList()
         pokemonView.setViewModel(viewModel: viewModel)
     }
     
@@ -45,7 +54,7 @@ class CollectionPokemonViewController: UIViewController {
         navigationController?.navigationBar.isTranslucent = false
         navigationController?.navigationBar.tintColor = .white
         self.navigationItem.title = "Pokemon App"
-        rightButton = UIBarButtonItem(image: viewModel.rightButtonImage,
+        rightButton = UIBarButtonItem(image: UIImage(named: viewModel.rightButtonImage),
                                       style: .done,
                                       target: self,
                                       action: #selector(changeLayoutPresentation))
@@ -56,8 +65,27 @@ class CollectionPokemonViewController: UIViewController {
     @objc
     private func changeLayoutPresentation() {
         viewModel.changePresentationLayout()
-        pokemonView.updatePresentationLayout()
-        rightButton.image = viewModel.rightButtonImage
+        pokemonView.updateView()
+        rightButton.image = UIImage(named: viewModel.rightButtonImage)
     }
 }
 
+extension CollectionPokemonViewController: CollectionPokemonViewControllerDelegate {
+    // -MARK: Functions
+    func canReloadView() {
+        pokemonView.updateView()
+    }
+    
+    func goToDetailScreen(pokemon: Pokemon, pokemonDescription: PokemonDescription) {
+        let viewModel = DetailPokemonViewModel(pokemon: pokemon, pokemonDescription: pokemonDescription)
+        let detailViewController: DetailPokemonViewController = DetailPokemonViewController(viewModel: viewModel)
+        navigationController?.pushViewController(detailViewController, animated: true)
+    }
+    
+    func errorRequest(title: String, description: String) {
+        let alertError: UIAlertController = UIAlertController(title: title, message: description, preferredStyle: .alert)
+        let okButton: UIAlertAction = UIAlertAction(title: "Ok", style: .default)
+        alertError.addAction(okButton)
+        self.present(alertError, animated: true)
+    }
+}

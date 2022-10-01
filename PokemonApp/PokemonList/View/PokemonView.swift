@@ -18,7 +18,6 @@ final class PokemonView: UIView {
     
     // MARK: - Private UI Properties
     private var pokemonCollectionView: UICollectionView = {
-        
         let collectionLayout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
         collectionLayout.scrollDirection = .vertical
         collectionLayout.sectionInset = UIEdgeInsets(top: 5, left: 28, bottom: 2, right: 28)
@@ -36,23 +35,23 @@ final class PokemonView: UIView {
     }()
     
     // MARK: - Init
-    override init(frame: CGRect) {
+    init() {
         super.init(frame: .zero)
-        backgroundColor = .white
         setHierarchy()
         setConstraint()
     }
     
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    // MARK: - Functions
-    func setHierarchy() {
+    // MARK: - Private Functions
+    private func setHierarchy() {
         self.addSubview(pokemonCollectionView)
     }
     
-    func setConstraint() {
+    private func setConstraint() {
         NSLayoutConstraint.activate([
             pokemonCollectionView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor),
             pokemonCollectionView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
@@ -61,6 +60,7 @@ final class PokemonView: UIView {
         ])
     }
     
+    // MARK: - Functions
     func setViewModel(viewModel: PokemonViewModel) {
         self.viewModel = viewModel
         dataSourceCollectionView.viewModel = viewModel
@@ -70,7 +70,7 @@ final class PokemonView: UIView {
         pokemonCollectionView.reloadData()
     }
     
-    func updatePresentationLayout() {
+    func updateView() {
         pokemonCollectionView.reloadData()
     }
 }

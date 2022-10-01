@@ -15,13 +15,15 @@ final class CollectionViewDataSource: NSObject, UICollectionViewDataSource {
     
     // -MARK: Functions
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 10
+        return viewModel.pokemonList.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell: PokemonCollectionViewCell = collectionView.dequeueReusableCell(withReuseIdentifier: PokemonCollectionViewCell.cellIdentifier, for: indexPath) as! PokemonCollectionViewCell
-        cell.pokemonNameLabel.text = viewModel.name
-        cell.pokemonImage.image = viewModel.image
+        guard let cell: PokemonCollectionViewCell = collectionView.dequeueReusableCell(withReuseIdentifier: PokemonCollectionViewCell.cellIdentifier, for: indexPath) as? PokemonCollectionViewCell else {
+            return UICollectionViewCell()
+        }
+        viewModel.position = indexPath.item
+        cell.setViewModel(viewModel: viewModel)
         return cell
     }
 }
